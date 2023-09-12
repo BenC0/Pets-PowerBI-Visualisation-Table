@@ -1,0 +1,5 @@
+*package-lock.json
+*node_modules
+*dist
+*.tmp
+*webpack.statistics.dev.html

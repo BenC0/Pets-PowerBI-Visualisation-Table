@@ -1,0 +1,60 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "Dimension",
+            "name": "dimension",
+            "kind": "Grouping"
+        },
+        {
+            "displayName": "Metrics",
+            "name": "metrics",
+            "kind": "Measure"
+        }
+    ],
+    "dataViewMappings": [
+        {
+            "conditions": [
+                {
+                    "dimension": {
+                        "max": 1
+                    }
+                },
+                {
+                    "metric": {
+                        "max": 2
+                    }
+                }
+            ],
+            "categorical": {
+                "categories": {
+                    "for": { "in": "dimension" }
+                },
+                "values": {
+                    "select": [
+                        { "bind": { "to": "metrics" } }
+                    ]
+                }
+            },
+            "table": {
+                "rows": {
+                    "select": [
+                        {
+                            "for": {
+                                "in": "column"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "value"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "privileges": [],
+    "sorting": {
+        "default": {   }
+    }
+}

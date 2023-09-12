@@ -5,14 +5,14 @@
         "guid":"petsTable7DF4B30D32D4485281AAE11B6FB29AB6",
         "visualClassName":"Visual",
         "version":"1.0.0.0",
-        "description":"",
-        "supportUrl":"",
-        "gitHubUrl":""
+        "description":"Simple table visualisation with sorting functionality.",
+        "supportUrl":"https://github.com/BenC0/Pets-PowerBI-Visualisation-Table/issues",
+        "gitHubUrl":"https://github.com/BenC0/Pets-PowerBI-Visualisation-Table"
     },
     "apiVersion":"5.3.0",
     "author":{
-        "name":"",
-        "email":""
+        "name":"Benji Cohen",
+        "email":"bcohen@petsathome.co.uk"
     },
     "assets":{
         "icon":"assets/icon.png"

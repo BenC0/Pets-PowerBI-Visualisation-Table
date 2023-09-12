@@ -45,7 +45,11 @@ export class Visual implements IVisual {
         // // Convert row arrays to row objects
         let rows = dataView.table.rows.map((row, index) => map_row(row, index, column_names_in_original_order))
 
-        create_and_insert_table(this.table, columns, rows)
+        let default_sort_direction = "desc"
+        let default_sort_header = columns[0]
+
+        let sorted_rows = sort_rows_by(rows, default_sort_header.queryName, default_sort_direction)
+        create_and_insert_table(this.table, columns, sorted_rows, default_sort_header.queryName, default_sort_direction)
 
         console.log({
             Visualisation: this,

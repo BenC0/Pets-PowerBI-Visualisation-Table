@@ -8,7 +8,7 @@ export function create_empty_table_container(method, target) {
     return node
 }
 
-export function create_data_html(columns, rows) {
+export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc") {
     let table_layout = columns.map(column => column.queryName)
     let table_shape = {
         rows: rows.length,
@@ -17,10 +17,14 @@ export function create_data_html(columns, rows) {
 
     let thead_html = `<thead><tr>`
     columns.forEach(column => {
+        let is_sorted = column.queryName == sorted_by
+        let sort_dir = is_sorted ? sort_direction : "" 
         thead_html += `<td
             dimension=${!!column.roles.dimension}
             metric=${!!column.roles.metrics}
-        >${column.displayName}</td>`
+            is_sorted=${is_sorted}
+            sort_direction=${sort_dir}
+            >${column.displayName}</td>`
     })
     thead_html += `</tr></tbody>`
 
@@ -95,4 +99,84 @@ export function map_row(row: any, row_index: number, column_names_in_original_or
         })
     })
     return mapped_row
+}
+
+export function sort_rows_by(rows, column, direction="asc") {
+    console.log({
+        event: "Sorting Rows By",
+        rows, column, direction,
+    })
+    let sorted_rows = rows.sort((rowA, rowB) => {
+        let rowATargetCell = rowA.values.filter(cell => cell.column_reference == column).pop()
+        let rowAValue = rowATargetCell.value
+        
+        let rowBTargetCell = rowB.values.filter(cell => cell.column_reference == column).pop()
+        let rowBValue = rowBTargetCell.value
+
+        if (typeof rowAValue == "string" && typeof rowBValue == "string") {
+            let output = 0;
+            rowAValue = rowAValue.toLowerCase()
+            rowBValue = rowBValue.toLowerCase()
+            if(rowAValue > rowBValue){
+                if (direction == "desc") {
+                    output = 1;
+                }
+                if (direction == "asc") {
+                    output = -1;
+                }
+            } 
+            if(rowAValue < rowBValue){
+                if (direction == "desc") {
+                    output = -1;
+                }
+                if (direction == "asc") {
+                    output = 1;
+                }
+            }
+            return output;
+        } else {
+            if (direction == "desc") {
+                return rowAValue - rowBValue
+            }
+            if (direction == "asc") {
+                return rowBValue - rowAValue
+            }
+        }
+    })
+    console.log({
+        rows,
+        sorted_rows,
+    })
+    return sorted_rows
+}
+
+export function clear_table(table) {
+    table.querySelectorAll("*").forEach(el => el.remove());
+}
+
+export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc") {
+    // Clear the current table
+    clear_table(target)
+    // Create and insert new table
+    let table_html = create_data_html(columns, rows, sorted_by, sort_direction)
+    target.insertAdjacentHTML("beforeend", table_html)
+    apply_table_header_sort_listeners(target, columns, rows)
+}
+
+export function apply_table_header_sort_listeners(table, columns, rows) {
+    let table_headers = table.querySelectorAll("thead td")
+    table_headers.forEach(header => {
+        header.addEventListener("click", e => {
+            let header_text = header.textContent
+            let header_details = columns.filter(column => column.displayName == header_text).pop()
+            let is_already_sorted = header.getAttribute("is_sorted") == "true"
+            let previous_sort_direction = header.getAttribute("sort_direction")
+            let direction = "desc"
+            if ( is_already_sorted && header.getAttribute("sort_direction") == "desc") {
+                direction = "asc"
+            } 
+            let sorted_rows = sort_rows_by(rows, header_details.queryName, direction)
+            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction)
+        })
+    })
 }

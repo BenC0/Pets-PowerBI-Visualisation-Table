@@ -5,7 +5,9 @@ import {
     create_empty_table_container,
     sort_and_arrange_columns,
     map_row,
-    create_data_html
+    create_data_html,
+    create_and_insert_table,
+    sort_rows_by
 } from "./modules/table"
 
 import powerbi from "powerbi-visuals-api";
@@ -43,18 +45,14 @@ export class Visual implements IVisual {
         // // Convert row arrays to row objects
         let rows = dataView.table.rows.map((row, index) => map_row(row, index, column_names_in_original_order))
 
-        // // Clear the current table
-        this.table.querySelectorAll("*").forEach(el => el.remove());
-        // Create and insert new table
-        let table_html = create_data_html(columns, rows)
-        this.table.insertAdjacentHTML("beforeend", table_html)
+        create_and_insert_table(this.table, columns, rows)
 
         console.log({
             Visualisation: this,
             dataView,
             columns,
             rows,
-            allowInteractions
+            allowInteractions,
         })
     }
 }

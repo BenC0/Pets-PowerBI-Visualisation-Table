@@ -118,27 +118,27 @@ export function sort_rows_by(rows, column, direction="asc") {
             rowAValue = rowAValue.toLowerCase()
             rowBValue = rowBValue.toLowerCase()
             if(rowAValue > rowBValue){
-                if (direction == "desc") {
+                if (direction == "asc") {
                     output = 1;
                 }
-                if (direction == "asc") {
+                if (direction == "desc") {
                     output = -1;
                 }
             } 
             if(rowAValue < rowBValue){
-                if (direction == "desc") {
+                if (direction == "asc") {
                     output = -1;
                 }
-                if (direction == "asc") {
+                if (direction == "desc") {
                     output = 1;
                 }
             }
             return output;
         } else {
-            if (direction == "desc") {
+            if (direction == "asc") {
                 return rowAValue - rowBValue
             }
-            if (direction == "asc") {
+            if (direction == "desc") {
                 return rowBValue - rowAValue
             }
         }
@@ -172,7 +172,7 @@ export function apply_table_header_sort_listeners(table, columns, rows) {
             let is_already_sorted = header.getAttribute("is_sorted") == "true"
             let previous_sort_direction = header.getAttribute("sort_direction")
             let direction = "desc"
-            if ( is_already_sorted && header.getAttribute("sort_direction") == "desc") {
+            if ( is_already_sorted && previous_sort_direction == "desc") {
                 direction = "asc"
             } 
             let sorted_rows = sort_rows_by(rows, header_details.queryName, direction)

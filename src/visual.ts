@@ -14,6 +14,7 @@ import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisual = powerbi.extensibility.visual.IVisual;
 import DataView = powerbi.DataView;
 import IVisualHost = powerbi.extensibility.IVisualHost;
+import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
 // import * as d3 from "d3";
 // type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
@@ -22,11 +23,14 @@ export class Visual implements IVisual {
     private host: IVisualHost;
     private body: HTMLElement;
     private table: HTMLElement;
+    private selectionManager: ISelectionManager;
 
     constructor(options: VisualConstructorOptions) {
-        this.body = document.querySelector('#sandbox-host');
         this.host = options.host;
+        this.body = document.querySelector('#sandbox-host');
         this.table = create_empty_table_container("beforeEnd", this.body);
+        // @ts-ignore
+        this.selectionManager = this.host.createSelectionManager();
     }
 
     public update(options: VisualUpdateOptions) {

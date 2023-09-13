@@ -207,7 +207,7 @@ export function create_and_insert_table(target, columns, rows, sorted_by = null,
     // Create and insert new table
     let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking, show_totals, fix_agg_row)
     target.insertAdjacentHTML("beforeend", table_html)
-    apply_table_header_sort_listeners(target, columns, rows, show_ranking, AggRowSettings)
+    apply_table_header_sort_listeners(target, columns, rows, RankSettings, AggRowSettings)
 }
 
 export function apply_table_header_sort_listeners(table, columns, rows, RankSettings, AggRowSettings) {

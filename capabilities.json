@@ -12,12 +12,16 @@
         }
     ],
     "objects": {
-        "BasicSettings": {
+        "RankSettings": {
             "properties": {
                 "show_ranking": {
                     "type": {"bool": true}
-                },
-                "show_totals": {
+                }
+            }
+        },
+        "AggRowSettings": {
+            "properties": {
+                "show_agg_row": {
                     "type": {"bool": true}
                 }
             }

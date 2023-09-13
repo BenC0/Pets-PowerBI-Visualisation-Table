@@ -42,9 +42,10 @@ export class Visual implements IVisual {
 
         this.visualSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualSettings, options.dataViews);
 
-        const BasicSettings = this.visualSettings.BasicSettings
-        const show_ranking = BasicSettings.ranking.value
-        const show_totals = BasicSettings.show_totals.value
+        const RankSettings = this.visualSettings.RankSettings
+        const AggRowSettings = this.visualSettings.AggRowSettings
+        const show_ranking = RankSettings.display.value
+        const show_totals = AggRowSettings.display.value
         
         // @ts-ignore
         const allowInteractions = this.host.hostCapabilities.allowInteractions
@@ -65,12 +66,10 @@ export class Visual implements IVisual {
 
         console.log({
             Visualisation: this,
-            dataView,
             columns,
             rows,
-            allowInteractions,
-            show_ranking,
-            show_totals
+            RankSettings,
+            AggRowSettings,
         })
     }
 

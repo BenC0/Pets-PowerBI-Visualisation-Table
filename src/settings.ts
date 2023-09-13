@@ -4,25 +4,32 @@ import FormattingSettingsCard = formattingSettings.Card;
 import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
 
-export class BasicSettings extends FormattingSettingsCard{
-    public ranking = new formattingSettings.ToggleSwitch({
+export class RankSettings extends FormattingSettingsCard{
+    public display = new formattingSettings.ToggleSwitch({
         name: "show_ranking",
-        displayName: "Display Ranks",
+        displayName: "Display",
         value: true,
     });
 
-    public show_totals = new formattingSettings.ToggleSwitch({
-        name: "show_totals",
-        displayName: "Display Total Row",
+    public name: string = "RankSettings";
+    public displayName: string = "Rank Settings";
+    public slices: FormattingSettingsSlice[] = [this.display]
+}
+
+export class AggRowSettings extends FormattingSettingsCard{
+    public display = new formattingSettings.ToggleSwitch({
+        name: "show_agg_row",
+        displayName: "Display",
         value: true,
     });
 
-    public name: string = "BasicSettings";
-    public displayName: string = "Basic Settings";
-    public slices: FormattingSettingsSlice[] = [this.ranking, this.show_totals]
+    public name: string = "AggRowSettings";
+    public displayName: string = "Aggregation Settings";
+    public slices: FormattingSettingsSlice[] = [this.display]
 }
 
 export class VisualSettings extends FormattingSettingsModel {
-    public BasicSettings: BasicSettings = new BasicSettings();
-    public cards: FormattingSettingsCard[] = [this.BasicSettings];
+    public RankSettings: RankSettings = new RankSettings();
+    public AggRowSettings: AggRowSettings = new AggRowSettings();
+    public cards: FormattingSettingsCard[] = [this.RankSettings, this.AggRowSettings];
 }

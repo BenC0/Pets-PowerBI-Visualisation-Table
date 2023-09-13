@@ -8,7 +8,7 @@ export function create_empty_table_container(method, target) {
     return node
 }
 
-export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc") {
+export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false) {
     let table_layout = columns.map(column => column.queryName)
     let table_shape = {
         rows: rows.length,
@@ -16,6 +16,14 @@ export function create_data_html(columns, rows, sorted_by = null, sort_direction
     }
 
     let thead_html = `<thead><tr>`
+    if (show_ranking) {
+        thead_html += `<td
+            dimension="false"
+            metric="false"
+            is_sorted="false"
+            sort_direction="asc"
+            >Rank</td>`
+    }
     columns.forEach(column => {
         let is_sorted = column.queryName == sorted_by
         let sort_dir = is_sorted ? sort_direction : "" 
@@ -32,6 +40,14 @@ export function create_data_html(columns, rows, sorted_by = null, sort_direction
     for (let row_index = 0; row_index < table_shape.rows; row_index++) {
         let row_html = `<tr>`
         let row = rows[row_index]
+
+        if (show_ranking) {
+            row_html += `<td
+                dimension="false"
+                metric="false"
+                >${row_index + 1}</td>`
+        }
+
         for (let column_index = 0; column_index < table_shape.columns; column_index++) {
             let column = columns[column_index]
             let cell = row.values.filter(cell => cell.column_reference == column.queryName).pop()
@@ -102,10 +118,6 @@ export function map_row(row: any, row_index: number, column_names_in_original_or
 }
 
 export function sort_rows_by(rows, column, direction="asc") {
-    console.log({
-        event: "Sorting Rows By",
-        rows, column, direction,
-    })
     let sorted_rows = rows.sort((rowA, rowB) => {
         let rowATargetCell = rowA.values.filter(cell => cell.column_reference == column).pop()
         let rowAValue = rowATargetCell.value
@@ -143,10 +155,6 @@ export function sort_rows_by(rows, column, direction="asc") {
             }
         }
     })
-    console.log({
-        rows,
-        sorted_rows,
-    })
     return sorted_rows
 }
 
@@ -154,16 +162,16 @@ export function clear_table(table) {
     table.querySelectorAll("*").forEach(el => el.remove());
 }
 
-export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc") {
+export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false) {
     // Clear the current table
     clear_table(target)
     // Create and insert new table
-    let table_html = create_data_html(columns, rows, sorted_by, sort_direction)
+    let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking)
     target.insertAdjacentHTML("beforeend", table_html)
-    apply_table_header_sort_listeners(target, columns, rows)
+    apply_table_header_sort_listeners(target, columns, rows, show_ranking)
 }
 
-export function apply_table_header_sort_listeners(table, columns, rows) {
+export function apply_table_header_sort_listeners(table, columns, rows, show_ranking = false) {
     let table_headers = table.querySelectorAll("thead td")
     table_headers.forEach(header => {
         header.addEventListener("click", e => {
@@ -176,7 +184,7 @@ export function apply_table_header_sort_listeners(table, columns, rows) {
                 direction = "asc"
             } 
             let sorted_rows = sort_rows_by(rows, header_details.queryName, direction)
-            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction)
+            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction, show_ranking)
         })
     })
 }

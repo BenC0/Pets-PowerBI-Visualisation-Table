@@ -11,16 +11,20 @@
             "kind": "Measure"
         }
     ],
+    "objects": {
+        "ranking": {
+            "properties": {
+                "show_ranking": {
+                    "type": {"bool": true}
+                }
+            }
+        }
+    },
     "dataViewMappings": [
         {
             "conditions": [
                 {
                     "dimension": {
-                        "max": 1
-                    }
-                },
-                {
-                    "metric": {
                         "max": 2
                     }
                 }

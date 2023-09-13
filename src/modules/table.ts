@@ -8,7 +8,7 @@ export function create_empty_table_container(method, target) {
     return node
 }
 
-export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false) {
+export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false, show_totals = false) {
     let table_layout = columns.map(column => column.queryName)
     let table_shape = {
         rows: rows.length,
@@ -66,14 +66,42 @@ export function create_data_html(columns, rows, sorted_by = null, sort_direction
         tbody_html += row_html
     }
     tbody_html += `</tbody>`
+
+    let tfoot_html = ``
+    if (show_totals) {
+        tfoot_html += `<tfoot>`
+        if (show_ranking) {
+            tfoot_html += `<td> </td>`
+        }
+        for (let column_index = 0; column_index < table_shape.columns; column_index++) {
+            tfoot_html += `<td>`
+            let column = columns[column_index]
+            if (!!column.roles.metrics) {
+                let values = 0
+                for (let row_index = 0; row_index < table_shape.rows; row_index++) {
+                    let row = rows[row_index]
+                    let value = row.values.filter(cell => cell.column_reference == column.queryName).pop()
+                    values += value.value
+                }
+                let formatString = column.format
+                let formatted_value = values.toString()
+                if (!!formatString && typeof values !== "string") {
+                    formatted_value = applyCustomFormat(values, formatString);
+                }
+                tfoot_html += formatted_value
+            }
+            tfoot_html += `</td>`
+        }
+        tfoot_html += `</tfoot>`
+    }
     
     let table_html = `<table class="pets-table">`
     table_html += thead_html
     table_html += tbody_html
+    table_html += tfoot_html
     table_html += `</table>`
     return table_html
 }
-
 
 export function sort_and_arrange_columns(columns) {
     let dimension_columns = columns.filter(column => !!column.roles.dimension)
@@ -162,16 +190,16 @@ export function clear_table(table) {
     table.querySelectorAll("*").forEach(el => el.remove());
 }
 
-export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false) {
+export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false, show_totals) {
     // Clear the current table
     clear_table(target)
     // Create and insert new table
-    let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking)
+    let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking, show_totals)
     target.insertAdjacentHTML("beforeend", table_html)
-    apply_table_header_sort_listeners(target, columns, rows, show_ranking)
+    apply_table_header_sort_listeners(target, columns, rows, show_ranking, show_totals)
 }
 
-export function apply_table_header_sort_listeners(table, columns, rows, show_ranking = false) {
+export function apply_table_header_sort_listeners(table, columns, rows, show_ranking = false, show_totals = false) {
     let table_headers = table.querySelectorAll("thead td")
     table_headers.forEach(header => {
         header.addEventListener("click", e => {
@@ -184,7 +212,7 @@ export function apply_table_header_sort_listeners(table, columns, rows, show_ran
                 direction = "asc"
             } 
             let sorted_rows = sort_rows_by(rows, header_details.queryName, direction)
-            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction, show_ranking)
+            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction, show_ranking, show_totals)
         })
     })
 }

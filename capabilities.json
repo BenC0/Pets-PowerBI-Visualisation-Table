@@ -12,9 +12,12 @@
         }
     ],
     "objects": {
-        "ranking": {
+        "BasicSettings": {
             "properties": {
                 "show_ranking": {
+                    "type": {"bool": true}
+                },
+                "show_totals": {
                     "type": {"bool": true}
                 }
             }

@@ -4,7 +4,7 @@
         "displayName":"PetsTable",
         "guid":"petsTable7DF4B30D32D4485281AAE11B6FB29AB6",
         "visualClassName":"Visual",
-        "version":"1.0.2.1",
+        "version":"1.0.3.0",
         "description":"Simple table visualisation with sorting functionality.",
         "supportUrl":"https://github.com/BenC0/Pets-PowerBI-Visualisation-Table/issues",
         "gitHubUrl":"https://github.com/BenC0/Pets-PowerBI-Visualisation-Table"

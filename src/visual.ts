@@ -44,7 +44,7 @@ export class Visual implements IVisual {
 
         const BasicSettings = this.visualSettings.BasicSettings
         const show_ranking = BasicSettings.ranking.value
-        const show_totals = BasicSettings.ranking.value
+        const show_totals = BasicSettings.show_totals.value
         
         // @ts-ignore
         const allowInteractions = this.host.hostCapabilities.allowInteractions

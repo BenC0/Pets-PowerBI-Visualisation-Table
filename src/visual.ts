@@ -44,8 +44,6 @@ export class Visual implements IVisual {
 
         const RankSettings = this.visualSettings.RankSettings
         const AggRowSettings = this.visualSettings.AggRowSettings
-        const show_ranking = RankSettings.display.value
-        const show_totals = AggRowSettings.display.value
         
         // @ts-ignore
         const allowInteractions = this.host.hostCapabilities.allowInteractions
@@ -62,7 +60,7 @@ export class Visual implements IVisual {
         let default_sort_header = columns.filter(column => !!column.isMeasure)[0]
 
         let sorted_rows = sort_rows_by(rows, default_sort_header.queryName, default_sort_direction)
-        create_and_insert_table(this.table, columns, sorted_rows, default_sort_header.queryName, default_sort_direction, show_ranking, show_totals)
+        create_and_insert_table(this.table, columns, sorted_rows, default_sort_header.queryName, default_sort_direction, RankSettings, AggRowSettings)
 
         console.log({
             Visualisation: this,

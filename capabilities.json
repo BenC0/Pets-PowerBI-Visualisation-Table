@@ -23,6 +23,9 @@
             "properties": {
                 "show_agg_row": {
                     "type": {"bool": true}
+                },
+                "fix_agg_row": {
+                    "type": {"bool": true}
                 }
             }
         }

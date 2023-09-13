@@ -4,4 +4,3 @@
 - based on specified column
 2. Total row options
 - average/sum
-- sticky/non-sticky

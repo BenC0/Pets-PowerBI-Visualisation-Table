@@ -8,7 +8,7 @@ export function create_empty_table_container(method, target) {
     return node
 }
 
-export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false, show_totals = false) {
+export function create_data_html(columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false, show_totals = false, fix_agg_row = true) {
     let table_layout = columns.map(column => column.queryName)
     let table_shape = {
         rows: rows.length,
@@ -69,7 +69,11 @@ export function create_data_html(columns, rows, sorted_by = null, sort_direction
 
     let tfoot_html = ``
     if (show_totals) {
-        tfoot_html += `<tfoot>`
+        if (fix_agg_row) {
+            tfoot_html += `<tfoot>`
+        } else {
+            tfoot_html += `<tfoot class="static">`
+        }
         if (show_ranking) {
             tfoot_html += `<td> </td>`
         }
@@ -190,16 +194,23 @@ export function clear_table(table) {
     table.querySelectorAll("*").forEach(el => el.remove());
 }
 
-export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc", show_ranking = false, show_totals) {
+export function create_and_insert_table(target, columns, rows, sorted_by = null, sort_direction = "asc", RankSettings, AggRowSettings) {
+    // Aggregation Row Style options
+    const show_totals = AggRowSettings.display.value
+    const fix_agg_row = AggRowSettings.fix_agg_row.value
+    console.log({fix_agg_row})
+    // Ranking Column Style options
+    const show_ranking = RankSettings.display.value
+
     // Clear the current table
     clear_table(target)
     // Create and insert new table
-    let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking, show_totals)
+    let table_html = create_data_html(columns, rows, sorted_by, sort_direction, show_ranking, show_totals, fix_agg_row)
     target.insertAdjacentHTML("beforeend", table_html)
-    apply_table_header_sort_listeners(target, columns, rows, show_ranking, show_totals)
+    apply_table_header_sort_listeners(target, columns, rows, show_ranking, AggRowSettings)
 }
 
-export function apply_table_header_sort_listeners(table, columns, rows, show_ranking = false, show_totals = false) {
+export function apply_table_header_sort_listeners(table, columns, rows, RankSettings, AggRowSettings) {
     let table_headers = table.querySelectorAll("thead td")
     table_headers.forEach(header => {
         header.addEventListener("click", e => {
@@ -212,7 +223,7 @@ export function apply_table_header_sort_listeners(table, columns, rows, show_ran
                 direction = "asc"
             } 
             let sorted_rows = sort_rows_by(rows, header_details.queryName, direction)
-            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction, show_ranking, show_totals)
+            create_and_insert_table(table, columns, sorted_rows, header_details.queryName, direction, RankSettings, AggRowSettings)
         })
     })
 }
